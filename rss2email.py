@@ -858,29 +858,29 @@ def list():
         i+= 1
 
 def opmlexport():
-    import xml.sax.saxutils
-    feeds, feedfileObject = load(lock=0)
-    
-    if feeds:
-        print '<?xml version="1.0" encoding="UTF-8"?>\n<opml version="1.0">\n<head>\n<title>rss2email OPML export</title>\n</head>\n<body>'
-        exportableFeeds = {}
-        if USE_OPML_TITLE_AS_FOLDER:
-            for f in feeds[1:]:
-                if not hasattr(exportableFeeds, f.folder):
-                    exportableFeeds[f.folder] = {}
-                exportableFeeds[f.folder].append(f)
+	import xml.sax.saxutils
+	feeds, feedfileObject = load(lock=0)
+	
+	if feeds:
+		print '<?xml version="1.0" encoding="UTF-8"?>\n<opml version="1.0">\n<head>\n<title>rss2email OPML export</title>\n</head>\n<body>'
+		exportableFeeds = {}
+		if USE_OPML_TITLE_AS_FOLDER:
+			for f in feeds[1:]:
+				if not f.folder in exportableFeeds:
+					exportableFeeds[f.folder] = []
+				exportableFeeds[f.folder].append(f)
 
-            for folder in exportableFeeds:
-                print '\n\t<outline text="%s" title="%s">' % (folder, folder)
-                for f in exportableFeeds[folder]:
-                    url = xml.sax.saxutils.escape(f.url)
-                    print '\n\t\t<outline type="rss" text="%s" xmlUrl="%s"/>' % (url, url)
-                print '\n\t</outline>'
-        else:
-            for f in feeds[1:]:
-                url = xml.sax.saxutils.escape(f.url)
-                print '<outline type="rss" text="%s" xmlUrl="%s"/>' % (url, url)
-        print '\n</body>\n</opml>'
+			for folder in exportableFeeds:
+				print '\n\t<outline text="%s" title="%s">' % (folder, folder)
+				for f in exportableFeeds[folder]:
+					url = xml.sax.saxutils.escape(f.url)
+					print '\n\t\t<outline type="rss" text="%s" xmlUrl="%s"/>' % (url, url)
+				print '\n\t</outline>'
+		else:
+			for f in feeds[1:]:
+				url = xml.sax.saxutils.escape(f.url)
+				print '<outline type="rss" text="%s" xmlUrl="%s"/>' % (url, url)
+		print '\n</body>\n</opml>'
 
 def opmlimport(importfile):
     importfileObject = None
